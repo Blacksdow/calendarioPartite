@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gestione calendario</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/index.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/libreria.js"></script>
+    <script src="js/index.js"></script>
+</head>
+
+<body>
+    <div id="elencoPartite" class="mt-5"></div>
+    <section class="container mt-5" id="updateMatch">
+        <div>
+            <div class="form-group">
+                <label for="idMatch">Id Match</label>
+                <input type="text" class="form-control" id="idMatch" placeholder="id Match" disabled>
+            </div>
+            <div class="form-group">
+                <label for="dataMatch">Data</label>
+                <input type="date" class="form-control" id="dataMatch" placeholder="Data Match">
+            </div>
+            <div class="form-group">
+                <label for="oraMatch">Ora</label>
+                <input type="time" class="form-control" id="oraMatch" placeholder="Ora Match">
+            </div>
+            <div class="form-group">
+                <label for="squadra">Squadra</label>
+                <input type="text" class="form-control" id="squadra" placeholder="Squadra">
+            </div>
+            <div class="form-group">
+                <label for="casa_fuori">Casa / Trasferta</label>
+                <input type="text" class="form-control" id="casa_fuori" placeholder="Casa / Trasferta">
+            </div>
+            <div class="form-group">
+                <label for="campo">Campo</label>
+                <input type="text" class="form-control" id="campo" placeholder="Campo">
+            </div>
+            <div class="form-group">
+                <label for="home">Home</label>
+                <input type="text" class="form-control" id="home" placeholder="Home">
+            </div>
+            <div class="form-group">
+                <label for="visitor">Visitor</label>
+                <input type="text" class="form-control" id="visitor" placeholder="Visitor">
+            </div>
+            <div class="form-group">
+                <label for="note">Note</label>
+                <input type="text" class="form-control" id="note" placeholder="Note">
+            </div>
+            <div class="row mt-5">
+                <div class="col-sm-6"><button class="btn btn-primary w-100" id="btnUpdate">Modifica Match</button></div>
+                <div class="col-sm-6"><button class="btn btn-danger w-100" id="btnAnnulla">Annulla Modifiche</button>
+                </div> 
+                Button normali dentro al form, diventa automaticamente un submit, refresha la pagina.
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
