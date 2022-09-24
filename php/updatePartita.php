@@ -1,8 +1,12 @@
 <?php 
 include "libreria.php";
 $con = connection("partite");
-$datas = $_POST["datas"];
-$datas = json_decode($datas);
-eseguiQuery($con , "UPDATE incontri SET data = $datas->data, ora = $ora, squadra = $datas->squadra, casa_trasferta = $datas->casa_trasferta, campo = $datas->campo, home = $datas->home, visitor = $datas->visitor 
-WHERE id = $datas->id");
+
+$data = json_decode($_GET["data"]);
+
+eseguiQuery($con , "UPDATE incontri SET data = '$data->data', ora = '$data->ora', squadra = '$data->squadra', casa_trasferta = '$data->casa_trasferta', campo = '$data->campo', home = '$data->home', visitor = '$data->visitor', note = '$data->note'
+WHERE id = '$data->id'");
+
+//eseguiQuery($con , "UPDATE incontri SET data = '$data', ora = '$ora', squadra = '$squadra', casa_trasferta = '$casa_trasferta', campo = '$campo', home = '$home', visitor = '$visitor', note = '$note'
+//WHERE id = '$id'");
 ?>

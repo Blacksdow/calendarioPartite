@@ -46,7 +46,8 @@ $(() => {
                 "home" : $("#home").val(),
                 "visitor" : $("#visitor").val(),
                 "note" : $("#note").val()};
-         sendRequest("php/updatePartita.php", "POST", datas, "CIAO");
+                console.log(datas);
+         sendRequest("php/updatePartita.php", "GET", datas, "CIAO");
          $("#updateMatch").hide();
          $("#elencoPartite").show();
          
