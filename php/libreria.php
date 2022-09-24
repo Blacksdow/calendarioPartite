@@ -32,6 +32,16 @@ function eseguiQuery($con,$sql){
     return $data;
 }
 
+function eseguiNonQuery($con,$sql){
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+    try{
+        $con->query($sql);
+    }
+    catch(mysqli_sql_exception $ex){
+        die("Errore di esecuzione della query. " . $ex->getMessage());
+    }
+}
+
 function settaCookie($name, $value, $expire, $path, $domanin, $sec){
     setcookie($name, $value, $expire, $path, $domanin, $sec);
 }
