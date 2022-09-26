@@ -39,6 +39,7 @@ $(() => {
 
       $("#btnUpdate").click(function(){
          var datas = {"data" : $("#dataMatch").val(),
+               "id" : $("#idMatch").val(),
                "ora" : $("#oraMatch").val(),
                 "squadra" : $("#squadra").val(),
                 "casa_trasferta" : $("#casa_fuori").val(),
@@ -47,7 +48,10 @@ $(() => {
                 "visitor" : $("#visitor").val(),
                 "note" : $("#note").val()};
                 console.log(datas);
-         sendRequest("php/updatePartita.php", "GET", datas, "CIAO");
+                $.ajax({
+
+                });
+         sendRequestNoCallback("php/updatePartita.php", "POST", {data:JSON.stringify(datas)});
          $("#updateMatch").hide();
          $("#elencoPartite").show();
          
