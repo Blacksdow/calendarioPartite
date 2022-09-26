@@ -26,9 +26,9 @@ $(() => {
          for (var name in data[i]) {
             $("<td id='"+ name +""+i+"'>").html(data[i][name]).appendTo(newRow);
          }
-         newRow.on("click", function () {
+         newRow.on("click", function () { 
             getPartita(i);
-         });
+          });
       }
    
 
