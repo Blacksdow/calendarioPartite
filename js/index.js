@@ -2,43 +2,24 @@
 $(() => {
    $("#updateMatch").hide();
 
-   let datiPartite = sendRequestNoCallback("php/getPartite.php", "GET", {});
+   let datiPartite = sendRequestNoCallback("php/getGamesByMonth.php", "POST", {data :JSON.stringify(($("#filtro_mesi").val()))});
    datiPartite.fail(function (jqXHR) {
       error(jqXHR);
    });
    datiPartite.done(function (data) {
-      //console.log(data);
-      let table = $("<table class='table table-striped table-hover'>");
-      let tBody = $("<tbody>");
-      tBody.appendTo(table);
-      $("#elencoPartite").append(table);
-      let intest = Object.keys(data[0]);
-      let row = $("<tr>");
-      row.appendTo(tBody);
-      for (let i = 0; i < intest.length; i++) {
-         let th = $("<th>");
-         th.html(intest[i]);
-         th.appendTo(row);
-      }
-
-      for (let i = 0; i < data.length; i++) {
-         let newRow = $("<tr>");
-         tBody.append(newRow);
-         for (var name in data[i]) {
-            $("<td id='"+ name +""+i+"'>").html(data[i][name]).appendTo(newRow);
-         }
-         newRow.on("click", function () {
-            getPartita(i);
-         });
-      }
+      costruisciTabella(data);
+      // //console.log(data);
    
+      caricaFiltro();
 
       $("#btnAnnulla").click(function () {
          $("#updateMatch").hide();
          $("#elencoPartite").show();
+         $("#filtro").show();
       });
 
       $("#btnUpdate").click(function(){
+         if($("#home").val() != $("#visitor").val()){
          var datas = {"data" : $("#dataMatch").val(),
                "id" : $("#idMatch").val(),
                "ora" : $("#oraMatch").val(),
@@ -48,32 +29,136 @@ $(() => {
                 "home" : $("#home").val(),
                 "visitor" : $("#visitor").val(),
                 "note" : $("#note").val()};
-                console.log(datas);
+               //  console.log(datas);
                 $.ajax({
 
                 });
          sendRequestNoCallback("php/updatePartita.php", "POST", {data:JSON.stringify(datas)});
+         let Partite = sendRequestNoCallback("php/getGamesByMonth.php", "POST", {data :JSON.stringify(($("#filtro_mesi").val()))});
+         Partite.fail(function (jqXHR) {
+            error(jqXHR);
+         });
+         Partite.done(function (dati) {
+            costruisciTabella(dati);
+         });
+      }
+      else
+      alert("ATTENZIONE!! Visitor e Home sono identici! IMPOSSIBILE MODIFICARE");
          $("#updateMatch").hide();
          $("#elencoPartite").show();
+         $("#filtro").show();
+      
          
+      });
+
+      $("#filtro_mesi").change(function(){
+         getGamesFromMonthAndChange();
+      })
+
+      $("#squadra").change(function(){
+         getTeamsAndCharge();
       });
    });
 });
 
+function costruisciTabella(dati){
+   let table = $("table").html(" ");
+      let tBody = $("<tbody>");
+      tBody.appendTo(table);
+      $("#elencoPartite").append(table);
+      let intest = Object.keys(dati[0]);
+      let row = $("<tr>");
+      row.appendTo(tBody);
+      for (let i = 0; i < intest.length; i++) {
+         let th = $("<th>");
+         th.html(intest[i]);
+         th.appendTo(row);
+      }
+
+      for (let i = 0; i < dati.length; i++) {
+         let newRow = $("<tr>");
+         tBody.append(newRow);
+         for (var name in dati[i]) {
+            $("<td id='"+ name +""+i+"'>").html(dati[i][name]).appendTo(newRow);
+         }
+         newRow.on("click", function () {
+            getPartita(i);
+         });
+      }
+}
+
+function getGamesFromMonthAndChange(){
+   let games = sendRequestNoCallback("php/getGamesByMonth.php", "POST", {data :JSON.stringify(($("#filtro_mesi").val()))});
+   games.fail(function (jqXHR) {
+      error(jqXHR);
+   });
+   games.done(function (data) {
+   costruisciTabella(data);
+   });
+}
+
+function getTeamsAndCharge(){
+   let teams = sendRequestNoCallback("php/getAllTeams.php", "POST", {data :JSON.stringify(($("#squadra").val()))});
+   teams.fail(function (jqXHR) {
+      error(jqXHR);
+   });
+   teams.done(function (data) {
+      // console.log(data);
+      let selectHome = $("#home");
+      let selectTrasferta = $("#visitor");
+      selectHome.html(" ");
+      selectTrasferta.html(" ");
+
+      for (let i = 0; i < data.length; i++) {
+         let newOption = $("<option>");
+         newOption.html(data[i].home);
+         newOption.val(data[i].home);
+         selectHome.append(newOption);
+      }
+
+      for (let j = 0; j < data.length; j++) {
+         let newOption = $("<option>");
+         newOption.html(data[j].home);
+         newOption.val(data[j].home);
+         selectTrasferta.append(newOption);
+      }
+      $("#visitor").val(" ");
+      $("#home").val(" ");
+   });
+}
+
+function caricaFiltro(){
+   
+   let mesi = sendRequestNoCallback("php/getMonths.php", "GET", {});
+   mesi.fail(function (jqXHR) {
+      error(jqXHR);
+   });
+   mesi.done(function (data) {
+      let select = $("#filtro_mesi");
+      select.html(" ");
+      $("<option>").html("Tutti i mesi").val("Tutti i mesi").appendTo(select);
+      for (let i = 0; i < data.length; i++) {
+         let newOption = $("<option>");
+         newOption.html(data[i].mesi);
+         newOption.val(data[i].mesi);
+         select.append(newOption);
+      }
+      
+      $("#filtro_mesi").val(" ");
+   });
+}
+
 function getPartita(index) {
-   console.log($("#home" + index).html());
+   // console.log($("#home" + index).html());
    $("#updateMatch").show();
    $("#elencoPartite").hide();
+   $("#filtro").hide();
    $("#idMatch").val($("#id" + index).html());
    /*let dataM = new Date($("#data"+index).html().toLocaleString('en-CA', {year: 'numeric', month: '2-digit', day: '2-digit'}));
    console.log(dataM);*/
    $("#dataMatch").val($("#data" + index).html().substr(0, 10));
    $("#oraMatch").val($("#ora" + index).html());
-   $("#casa_fuori").val($("#casa_trasferta" + index).html());
-   // $("#campo").val($("#campo" + index).html());
-   $("#home").val($("#home" + index).html());
-   $("#visitor").val($("#visitor" + index).html());
-   $("#note").val($("#note" + index).html());
+   
    let squadre = sendRequestNoCallback("php/getSquadre.php", "GET", {});
    squadre.fail(function (jqXHR) {
       error(jqXHR);
@@ -81,11 +166,9 @@ function getPartita(index) {
    squadre.done(function (data) {
       let select = $("#squadra");
       select.html(" ");
-      console.log("done")
-
       for (let i = 0; i < data.length; i++) {
          let newOption = $("<option>");
-         newOption.text(data[i].squadra);
+         newOption.html(data[i].squadra);
          newOption.val(data[i].squadra);
          select.append(newOption);
       }
@@ -98,18 +181,60 @@ function getPartita(index) {
    campo.done(function (data) {
       let select = $("#campo");
       select.html(" ");
-      console.log("done"); 
 
       for (let i = 0; i < data.length; i++) {
          let newOption = $("<option>");
-         newOption.text(data[i].campo);
+         newOption.html(data[i].campo);
          newOption.val(data[i].campo);
          select.append(newOption);
       }
       $("#campo").val($("#campo" + index).html());
    });
-   
-   console.log("squadra", $("#squadra").val())
+   let casa_fuori = sendRequestNoCallback("php/getCasa_fuori.php", "GET", {});
+   casa_fuori.fail(function (jqXHR) {
+      error(jqXHR);
+   });
+   casa_fuori.done(function (data) {
+      let select = $("#casa_fuori");
+      select.html(" ");
+
+      for (let i = 0; i < data.length; i++) {
+         let newOption = $("<option>");
+         newOption.html(data[i].casa_trasferta);
+         newOption.val(data[i].casa_trasferta);
+         select.append(newOption);
+      }
+      $("#casa_fuori").val($("#casa_trasferta" + index).html());
+   });
+   let teams = sendRequestNoCallback("php/getAllTeams.php", "POST", {data :JSON.stringify(($("#squadra" + index).html()))});
+   teams.fail(function (jqXHR) {
+      error(jqXHR);
+   });
+   teams.done(function (data) {
+      // console.log(data);
+      let selectHome = $("#home");
+      let selectTrasferta = $("#visitor");
+      selectHome.html(" ");
+      selectTrasferta.html(" ");
+
+      for (let i = 0; i < data.length; i++) {
+         let newOption = $("<option>");
+         newOption.html(data[i].home);
+         newOption.val(data[i].home);
+         if(newOption.html() != $("#visitor" + index).html())
+         selectHome.append(newOption);
+      }
+      $("#home").val($("#home" + index).html());
+
+      for (let j = 0; j < data.length; j++) {
+         let newOption = $("<option>");
+         newOption.html(data[j].home);
+         newOption.val(data[j].home);
+         if(newOption.html() != $("#home").val())
+         selectTrasferta.append(newOption);
+      }
+      $("#visitor").val($("#visitor" + index).html());
+   });
    
 }
 
