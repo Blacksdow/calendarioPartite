@@ -20,6 +20,7 @@ $(() => {
          th.html(intest[i]);
          th.appendTo(row);
       }
+
       for (let i = 0; i < data.length; i++) {
          let newRow = $("<tr>");
          tBody.append(newRow);
@@ -68,12 +69,48 @@ function getPartita(index) {
    console.log(dataM);*/
    $("#dataMatch").val($("#data" + index).html().substr(0, 10));
    $("#oraMatch").val($("#ora" + index).html());
-   $("#squadra").val($("#squadra" + index).html());
    $("#casa_fuori").val($("#casa_trasferta" + index).html());
-   $("#campo").val($("#campo" + index).html());
+   // $("#campo").val($("#campo" + index).html());
    $("#home").val($("#home" + index).html());
    $("#visitor").val($("#visitor" + index).html());
    $("#note").val($("#note" + index).html());
+   let squadre = sendRequestNoCallback("php/getSquadre.php", "GET", {});
+   squadre.fail(function (jqXHR) {
+      error(jqXHR);
+   });
+   squadre.done(function (data) {
+      let select = $("#squadra");
+      select.html(" ");
+      console.log("done")
+
+      for (let i = 0; i < data.length; i++) {
+         let newOption = $("<option>");
+         newOption.text(data[i].squadra);
+         newOption.val(data[i].squadra);
+         select.append(newOption);
+      }
+      $("#squadra").val($("#squadra" + index).html());
+   });
+   let campo = sendRequestNoCallback("php/getCampi.php", "GET", {});
+   campo.fail(function (jqXHR) {
+      error(jqXHR);
+   });
+   campo.done(function (data) {
+      let select = $("#campo");
+      select.html(" ");
+      console.log("done"); 
+
+      for (let i = 0; i < data.length; i++) {
+         let newOption = $("<option>");
+         newOption.text(data[i].campo);
+         newOption.val(data[i].campo);
+         select.append(newOption);
+      }
+      $("#campo").val($("#campo" + index).html());
+   });
+   
+   console.log("squadra", $("#squadra").val())
+   
 }
 
 
